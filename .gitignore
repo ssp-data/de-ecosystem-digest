@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.mypy_cache/
+
+# Secrets
+.env
+
+# Data — ingested locally, not committed (except the small gharchive slice)
+de_ecosystem.duckdb
+de_ecosystem.duckdb.wal
+data/raw/gharchive/*.json.gz
+!data/raw/gharchive/de-slice.json.gz
+archive/
+
+# xorq builds — commit ONE artifact by force-add for the manifest-diff demo
+builds/
+.env-example
+.env*
+!.env.example

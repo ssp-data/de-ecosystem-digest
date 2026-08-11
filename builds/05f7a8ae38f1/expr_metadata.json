@@ -1,0 +1,415 @@
+{
+  "kind": "expr",
+  "schema_out": {
+    "week": "timestamp",
+    "stars": "int64"
+  },
+  "cache_keys": {
+    "key": "xorq_cache-snapshot-14f0bdfb48ea4e81af4b37b67d0e9421",
+    "relative_path": "parquet"
+  },
+  "sql_queries": [
+    [
+      "main",
+      "xorq_datafusion",
+      "SELECT\n  *\nFROM (\n  SELECT\n    \"t1\".\"week\",\n    COUNT(\"t1\".\"id\") AS \"stars\"\n  FROM (\n    SELECT\n      \"t1\".\"id\",\n      \"t1\".\"created_at\",\n      \"t1\".\"type\",\n      \"t1\".\"repo_name\",\n      \"t1\".\"actor_login\",\n      \"t1\".\"week\"\n    FROM (\n      SELECT\n        \"t0\".\"id\",\n        \"t0\".\"created_at\",\n        \"t0\".\"type\",\n        \"t0\".\"repo_name\",\n        \"t0\".\"actor_login\",\n        DATE_TRUNC('WEEK', \"t0\".\"created_at\") AS \"week\"\n      FROM \"raw_github_events\" AS \"t0\"\n      WHERE\n        \"t0\".\"repo_name\" = 'dbt-labs/dbt-core'\n        AND \"t0\".\"type\" = 'WatchEvent'\n        AND \"t0\".\"created_at\" > ARROW_CAST('2026-07-12 17:31:29.462548', 'Timestamp(Microsecond, None)')\n    ) AS \"t1\"\n  ) AS t1\n  GROUP BY\n    \"t1\".\"week\"\n) AS \"t2\"\nORDER BY\n  \"t2\".\"week\" ASC"
+    ]
+  ],
+  "lineage": {
+    "version": 2,
+    "root": "@sort_1",
+    "nodes": [
+      {
+        "id": "@sort_1",
+        "snapshot_hash": "05f7a8ae38f12bb178d00c8924aa152e",
+        "type": "Sort",
+        "label": "Sort",
+        "is_boundary": false,
+        "schema": {
+          "week": "timestamp",
+          "stars": "int64"
+        }
+      },
+      {
+        "id": "@aggregate_2",
+        "snapshot_hash": "103f4ba81c8ddffd0007f4797419d075",
+        "type": "Aggregate",
+        "label": "Aggregate",
+        "is_boundary": false,
+        "schema": {
+          "week": "timestamp",
+          "stars": "int64"
+        }
+      },
+      {
+        "id": "@sort_key_3",
+        "snapshot_hash": "3113a7ee36400ca53299c7e3dff62757",
+        "type": "SortKey",
+        "label": "SortKey",
+        "is_boundary": false
+      },
+      {
+        "id": "@project_4",
+        "snapshot_hash": "5bef7f409ef6049c2c5cda95b4c1496a",
+        "type": "Project",
+        "label": "Project",
+        "is_boundary": false,
+        "schema": {
+          "id": "string",
+          "created_at": "timestamp(9)",
+          "type": "string",
+          "repo_name": "string",
+          "actor_login": "string",
+          "week": "timestamp"
+        }
+      },
+      {
+        "id": "@field_5",
+        "snapshot_hash": "d959ccdec1345a1f3a8302bfcf80a2c9",
+        "type": "Field",
+        "label": "Field:week",
+        "is_boundary": false
+      },
+      {
+        "id": "@count_6",
+        "snapshot_hash": "a8fbd17d27743cb5d5f65f752a9adcaa",
+        "type": "Count",
+        "label": "Count",
+        "is_boundary": false
+      },
+      {
+        "id": "@field_7",
+        "snapshot_hash": "56692d610fd34c3a350f0c23c67a825a",
+        "type": "Field",
+        "label": "Field:week",
+        "is_boundary": false
+      },
+      {
+        "id": "@filter_8",
+        "snapshot_hash": "60a31a27992ec316d1e0f4d61b922777",
+        "type": "Filter",
+        "label": "Filter",
+        "is_boundary": false,
+        "schema": {
+          "id": "string",
+          "created_at": "timestamp(9)",
+          "type": "string",
+          "repo_name": "string",
+          "actor_login": "string"
+        }
+      },
+      {
+        "id": "@field_9",
+        "snapshot_hash": "8905da5ac7570c9895cdc0dd92b1240f",
+        "type": "Field",
+        "label": "Field:id",
+        "is_boundary": false
+      },
+      {
+        "id": "@field_10",
+        "snapshot_hash": "10ee2af53d4a7d4599c44a4ce1a2b218",
+        "type": "Field",
+        "label": "Field:created_at",
+        "is_boundary": false
+      },
+      {
+        "id": "@field_11",
+        "snapshot_hash": "1d28b196a6e0680e65a84407aa58931c",
+        "type": "Field",
+        "label": "Field:type",
+        "is_boundary": false
+      },
+      {
+        "id": "@field_12",
+        "snapshot_hash": "ae2ff17f9cc8c71a98ca83eb2c1502af",
+        "type": "Field",
+        "label": "Field:repo_name",
+        "is_boundary": false
+      },
+      {
+        "id": "@field_13",
+        "snapshot_hash": "27577bb5e04940fdfe8af88af12c9cf2",
+        "type": "Field",
+        "label": "Field:actor_login",
+        "is_boundary": false
+      },
+      {
+        "id": "@timestamp_truncate_14",
+        "snapshot_hash": "267a768a760cc24415b071b81bd27ec3",
+        "type": "TimestampTruncate",
+        "label": "TimestampTruncate",
+        "is_boundary": false
+      },
+      {
+        "id": "@field_15",
+        "snapshot_hash": "474e7a296173db9321201ac188150313",
+        "type": "Field",
+        "label": "Field:id",
+        "is_boundary": false
+      },
+      {
+        "id": "@database_table_16",
+        "snapshot_hash": "34c33ac9adc91c46dd406306cd866e66",
+        "type": "DatabaseTable",
+        "label": "DatabaseTable",
+        "is_boundary": true,
+        "boundary_kind": "table",
+        "backend": "xorq_datafusion",
+        "table_name": "raw_github_events",
+        "schema": {
+          "id": "string",
+          "created_at": "timestamp(9)",
+          "type": "string",
+          "repo_name": "string",
+          "actor_login": "string"
+        }
+      },
+      {
+        "id": "@equals_17",
+        "snapshot_hash": "9d80530bb7fba5f674001e5b45462b30",
+        "type": "Equals",
+        "label": "Equals",
+        "is_boundary": false
+      },
+      {
+        "id": "@equals_18",
+        "snapshot_hash": "2502da2dc2c3fe59ccb58da40147c835",
+        "type": "Equals",
+        "label": "Equals",
+        "is_boundary": false
+      },
+      {
+        "id": "@greater_19",
+        "snapshot_hash": "a55d91848daddd15b1ded261026bc090",
+        "type": "Greater",
+        "label": "Greater",
+        "is_boundary": false
+      },
+      {
+        "id": "@field_20",
+        "snapshot_hash": "076e2ba4753df7d28872b971b594cf2f",
+        "type": "Field",
+        "label": "Field:repo_name",
+        "is_boundary": false
+      },
+      {
+        "id": "@literal_21",
+        "snapshot_hash": "0c27c67c9e79ada5391435b09a92b66b",
+        "type": "Literal",
+        "label": "Literal: dbt-labs/dbt-core",
+        "is_boundary": false
+      },
+      {
+        "id": "@field_22",
+        "snapshot_hash": "fcbb1dc47a1afec1dda834b9e79cf4e7",
+        "type": "Field",
+        "label": "Field:type",
+        "is_boundary": false
+      },
+      {
+        "id": "@literal_23",
+        "snapshot_hash": "378108ca91e5258dada9ef3d4a4a0341",
+        "type": "Literal",
+        "label": "Literal: WatchEvent",
+        "is_boundary": false
+      },
+      {
+        "id": "@field_24",
+        "snapshot_hash": "00dd216c179d439385a08ce6b1c5d825",
+        "type": "Field",
+        "label": "Field:created_at",
+        "is_boundary": false
+      },
+      {
+        "id": "@literal_25",
+        "snapshot_hash": "8a38afd955aed3a76af62aeb661c616e",
+        "type": "Literal",
+        "label": "Literal: 2026-07-12 17:31:29.462548",
+        "is_boundary": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "@sort_1",
+        "to": "@aggregate_2",
+        "scope": "root"
+      },
+      {
+        "from": "@sort_1",
+        "to": "@sort_key_3",
+        "scope": "root"
+      },
+      {
+        "from": "@aggregate_2",
+        "to": "@project_4",
+        "scope": "root"
+      },
+      {
+        "from": "@aggregate_2",
+        "to": "@field_5",
+        "scope": "root"
+      },
+      {
+        "from": "@aggregate_2",
+        "to": "@count_6",
+        "scope": "root"
+      },
+      {
+        "from": "@sort_key_3",
+        "to": "@field_7",
+        "scope": "root"
+      },
+      {
+        "from": "@project_4",
+        "to": "@filter_8",
+        "scope": "root"
+      },
+      {
+        "from": "@project_4",
+        "to": "@field_9",
+        "scope": "root"
+      },
+      {
+        "from": "@project_4",
+        "to": "@field_10",
+        "scope": "root"
+      },
+      {
+        "from": "@project_4",
+        "to": "@field_11",
+        "scope": "root"
+      },
+      {
+        "from": "@project_4",
+        "to": "@field_12",
+        "scope": "root"
+      },
+      {
+        "from": "@project_4",
+        "to": "@field_13",
+        "scope": "root"
+      },
+      {
+        "from": "@project_4",
+        "to": "@timestamp_truncate_14",
+        "scope": "root"
+      },
+      {
+        "from": "@field_5",
+        "to": "@project_4",
+        "scope": "root"
+      },
+      {
+        "from": "@count_6",
+        "to": "@field_15",
+        "scope": "root"
+      },
+      {
+        "from": "@field_7",
+        "to": "@aggregate_2",
+        "scope": "root"
+      },
+      {
+        "from": "@filter_8",
+        "to": "@database_table_16",
+        "scope": "root"
+      },
+      {
+        "from": "@filter_8",
+        "to": "@equals_17",
+        "scope": "root"
+      },
+      {
+        "from": "@filter_8",
+        "to": "@equals_18",
+        "scope": "root"
+      },
+      {
+        "from": "@filter_8",
+        "to": "@greater_19",
+        "scope": "root"
+      },
+      {
+        "from": "@field_9",
+        "to": "@filter_8",
+        "scope": "root"
+      },
+      {
+        "from": "@field_10",
+        "to": "@filter_8",
+        "scope": "root"
+      },
+      {
+        "from": "@field_11",
+        "to": "@filter_8",
+        "scope": "root"
+      },
+      {
+        "from": "@field_12",
+        "to": "@filter_8",
+        "scope": "root"
+      },
+      {
+        "from": "@field_13",
+        "to": "@filter_8",
+        "scope": "root"
+      },
+      {
+        "from": "@timestamp_truncate_14",
+        "to": "@field_10",
+        "scope": "root"
+      },
+      {
+        "from": "@field_15",
+        "to": "@project_4",
+        "scope": "root"
+      },
+      {
+        "from": "@equals_17",
+        "to": "@field_20",
+        "scope": "root"
+      },
+      {
+        "from": "@equals_17",
+        "to": "@literal_21",
+        "scope": "root"
+      },
+      {
+        "from": "@equals_18",
+        "to": "@field_22",
+        "scope": "root"
+      },
+      {
+        "from": "@equals_18",
+        "to": "@literal_23",
+        "scope": "root"
+      },
+      {
+        "from": "@greater_19",
+        "to": "@field_24",
+        "scope": "root"
+      },
+      {
+        "from": "@greater_19",
+        "to": "@literal_25",
+        "scope": "root"
+      },
+      {
+        "from": "@field_20",
+        "to": "@database_table_16",
+        "scope": "root"
+      },
+      {
+        "from": "@field_22",
+        "to": "@database_table_16",
+        "scope": "root"
+      },
+      {
+        "from": "@field_24",
+        "to": "@database_table_16",
+        "scope": "root"
+      }
+    ],
+    "overlays": {}
+  }
+}

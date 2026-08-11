@@ -1,0 +1,18 @@
+# The declarative data stack — the whole pipeline described in one file.
+# Precedence: environment variable > stack.yaml > built-in default.
+# (e.g. DE_ENGINE, DE_DB_PATH, DE_WINDOW_DAYS, DE_BSKY_MAX_PAGES override these.)
+
+engine: datafusion              # duckdb | datafusion | snowflake  <- swap the engine here
+db_path: de_ecosystem.duckdb
+
+sources:                        # nouns — dlt ingests these (outside the grammar)
+  bluesky:
+    max_pages: 40
+  github:
+    slice: "data/raw/gharchive/*.json.gz"
+
+momentum:                       # the digest metric
+  window_days: 90               # 90 = laptop pulse; 365 = warehouse year-in-review
+  tools: [dbt-core, dagster, dlt, ibis-framework, xorq, apache-airflow, polars,
+          duckdb, great-expectations, pyiceberg, prefect, mage-ai, sqlmesh,
+          soda-core, pydantic, sqlglot]

@@ -1,0 +1,16 @@
+{
+  "current_library_version": "0.3.38",
+  "metadata_version": "0.0.0",
+  "git_state": {
+    "commit": "a98a397d40d789b3de1c067cf6dae9fe9a64bb79",
+    "diff": "diff --git a/docs/superpowers/plans/2026-08-11-de-ecosystem-digest-simple.md b/docs/superpowers/plans/2026-08-11-de-ecosystem-digest-simple.md\nindex dc0ad52..2154d46 100644\n--- a/docs/superpowers/plans/2026-08-11-de-ecosystem-digest-simple.md\n+++ b/docs/superpowers/plans/2026-08-11-de-ecosystem-digest-simple.md\n@@ -433,7 +433,7 @@ def raw_download_volume(\n         ])\n         .group_by(\"package\")\n         .agg(downloads=t.downloads.sum())\n-        .order_by(t.downloads.sum().desc())\n+        .order_by(xo._.downloads.desc())  # order by the aggregated output column\n     )\n ```",
+    "diff_cached": ""
+  },
+  "sys-version_info": [
+    3,
+    13,
+    6,
+    "final",
+    0
+  ]
+}
