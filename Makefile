@@ -1,8 +1,8 @@
 .DEFAULT_GOAL := help
 # Targets are commands, not files — needed since ./catalog is also a directory.
-.PHONY: help install ingest summary preview catalog catalog-list catalog-run digest \
-        manifest engines ml test full-pipeline clean noun verb template modifier \
-        lineage run-sentence
+.PHONY: help install ingest summary preview catalog catalog-list catalog-run \
+        digest manifest engines ml test full-pipeline clean noun verb template \
+        modifier lineage run-sentence
 
 DB_PATH ?= de_ecosystem.duckdb
 CATALOG ?= ./catalog
@@ -25,7 +25,8 @@ summary: ## Ingest overview with DuckDB bar() charts
 preview: ## Run every named expression and print result tables (dev overview)
 	uv run python expr.py
 
-catalog: ## Register curated expressions as versioned entries in ./catalog (real xorq catalog)
+catalog: ## Register curated expressions as versioned entries in ./catalog (git-backed store, fresh each run)
+	rm -rf $(CATALOG)
 	uv run python scripts/catalog_register.py
 	uv run xorq catalog --path $(CATALOG) list --kind
 
