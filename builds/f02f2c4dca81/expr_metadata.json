@@ -1,0 +1,415 @@
+{
+  "kind": "expr",
+  "schema_out": {
+    "week": "timestamp",
+    "stars": "int64"
+  },
+  "cache_keys": {
+    "key": "xorq_cache-snapshot-34610d3ed4988fa6b20aef457e1452c6",
+    "relative_path": "parquet"
+  },
+  "sql_queries": [
+    [
+      "main",
+      "duckdb",
+      "SELECT\n  *\nFROM (\n  SELECT\n    \"t1\".\"week\",\n    COUNT(\"t1\".\"id\") AS \"stars\"\n  FROM (\n    SELECT\n      \"t0\".\"id\",\n      \"t0\".\"created_at\",\n      \"t0\".\"type\",\n      \"t0\".\"repo_name\",\n      \"t0\".\"actor_login\",\n      DATE_TRUNC('WEEK', \"t0\".\"created_at\") AS \"week\"\n    FROM \"raw_github_events\" AS \"t0\"\n    WHERE\n      \"t0\".\"repo_name\" = 'dbt-labs/dbt-core'\n      AND \"t0\".\"type\" = 'WatchEvent'\n      AND \"t0\".\"created_at\" > MAKE_TIMESTAMP(2026, 7, 13, 18, 20, 49.378017)\n  ) AS \"t1\"\n  GROUP BY\n    1\n) AS \"t2\"\nORDER BY\n  \"t2\".\"week\" ASC"
+    ]
+  ],
+  "lineage": {
+    "version": 2,
+    "root": "@sort_1",
+    "nodes": [
+      {
+        "id": "@sort_1",
+        "snapshot_hash": "f02f2c4dca813db9264c55e5e774b75e",
+        "type": "Sort",
+        "label": "Sort",
+        "is_boundary": false,
+        "schema": {
+          "week": "timestamp",
+          "stars": "int64"
+        }
+      },
+      {
+        "id": "@aggregate_2",
+        "snapshot_hash": "7e9632cf031256797711cd242272b237",
+        "type": "Aggregate",
+        "label": "Aggregate",
+        "is_boundary": false,
+        "schema": {
+          "week": "timestamp",
+          "stars": "int64"
+        }
+      },
+      {
+        "id": "@sort_key_3",
+        "snapshot_hash": "f8f02ca8e87ef33b3dcc6afb7d635c22",
+        "type": "SortKey",
+        "label": "SortKey",
+        "is_boundary": false
+      },
+      {
+        "id": "@project_4",
+        "snapshot_hash": "751913a9c19bdc37bdb2a3769a8347f0",
+        "type": "Project",
+        "label": "Project",
+        "is_boundary": false,
+        "schema": {
+          "id": "string",
+          "created_at": "timestamp",
+          "type": "string",
+          "repo_name": "string",
+          "actor_login": "string",
+          "week": "timestamp"
+        }
+      },
+      {
+        "id": "@field_5",
+        "snapshot_hash": "71e7cca1bc9bbcd3d4bc56c450c6e5f4",
+        "type": "Field",
+        "label": "Field:week",
+        "is_boundary": false
+      },
+      {
+        "id": "@count_6",
+        "snapshot_hash": "403156880db8eef840cb83405276a91a",
+        "type": "Count",
+        "label": "Count",
+        "is_boundary": false
+      },
+      {
+        "id": "@field_7",
+        "snapshot_hash": "6522f974bf172587abba452a5d62d569",
+        "type": "Field",
+        "label": "Field:week",
+        "is_boundary": false
+      },
+      {
+        "id": "@filter_8",
+        "snapshot_hash": "103f9f831222adeee10c9dc00ddc2398",
+        "type": "Filter",
+        "label": "Filter",
+        "is_boundary": false,
+        "schema": {
+          "id": "string",
+          "created_at": "timestamp",
+          "type": "string",
+          "repo_name": "string",
+          "actor_login": "string"
+        }
+      },
+      {
+        "id": "@field_9",
+        "snapshot_hash": "30909a3abd71eeb7309c4b380d8282bd",
+        "type": "Field",
+        "label": "Field:id",
+        "is_boundary": false
+      },
+      {
+        "id": "@field_10",
+        "snapshot_hash": "78de263f058a13c1781f19b9b8e2a39f",
+        "type": "Field",
+        "label": "Field:created_at",
+        "is_boundary": false
+      },
+      {
+        "id": "@field_11",
+        "snapshot_hash": "8733ff92bd05ef67213371800c30bad5",
+        "type": "Field",
+        "label": "Field:type",
+        "is_boundary": false
+      },
+      {
+        "id": "@field_12",
+        "snapshot_hash": "6799064ace13e56f78118d28589f906d",
+        "type": "Field",
+        "label": "Field:repo_name",
+        "is_boundary": false
+      },
+      {
+        "id": "@field_13",
+        "snapshot_hash": "d2cdc5e3742f9b007204c24db1ced565",
+        "type": "Field",
+        "label": "Field:actor_login",
+        "is_boundary": false
+      },
+      {
+        "id": "@timestamp_truncate_14",
+        "snapshot_hash": "c1310005f884b28780b776d7dbc31498",
+        "type": "TimestampTruncate",
+        "label": "TimestampTruncate",
+        "is_boundary": false
+      },
+      {
+        "id": "@field_15",
+        "snapshot_hash": "479e8bd5127cf5ef3ca9b832a3839d92",
+        "type": "Field",
+        "label": "Field:id",
+        "is_boundary": false
+      },
+      {
+        "id": "@database_table_16",
+        "snapshot_hash": "ec8b59f110e6f26fd665af3c0b0c0c0c",
+        "type": "DatabaseTable",
+        "label": "DatabaseTable",
+        "is_boundary": true,
+        "boundary_kind": "table",
+        "backend": "duckdb",
+        "table_name": "raw_github_events",
+        "schema": {
+          "id": "string",
+          "created_at": "timestamp",
+          "type": "string",
+          "repo_name": "string",
+          "actor_login": "string"
+        }
+      },
+      {
+        "id": "@equals_17",
+        "snapshot_hash": "aab1dd889f31f309e75c127079bd8449",
+        "type": "Equals",
+        "label": "Equals",
+        "is_boundary": false
+      },
+      {
+        "id": "@equals_18",
+        "snapshot_hash": "cb623d54742e454faa9b196744346266",
+        "type": "Equals",
+        "label": "Equals",
+        "is_boundary": false
+      },
+      {
+        "id": "@greater_19",
+        "snapshot_hash": "6fcdf68da01675203b2d96ce78d97c82",
+        "type": "Greater",
+        "label": "Greater",
+        "is_boundary": false
+      },
+      {
+        "id": "@field_20",
+        "snapshot_hash": "049165fef7a48d0964575ed51ec9a9bb",
+        "type": "Field",
+        "label": "Field:repo_name",
+        "is_boundary": false
+      },
+      {
+        "id": "@literal_21",
+        "snapshot_hash": "0c27c67c9e79ada5391435b09a92b66b",
+        "type": "Literal",
+        "label": "Literal: dbt-labs/dbt-core",
+        "is_boundary": false
+      },
+      {
+        "id": "@field_22",
+        "snapshot_hash": "95e320811f8e77ac6d5c21f1304924d8",
+        "type": "Field",
+        "label": "Field:type",
+        "is_boundary": false
+      },
+      {
+        "id": "@literal_23",
+        "snapshot_hash": "378108ca91e5258dada9ef3d4a4a0341",
+        "type": "Literal",
+        "label": "Literal: WatchEvent",
+        "is_boundary": false
+      },
+      {
+        "id": "@field_24",
+        "snapshot_hash": "3581f947d2dc33b5cb7e21cf6f0f3d6c",
+        "type": "Field",
+        "label": "Field:created_at",
+        "is_boundary": false
+      },
+      {
+        "id": "@literal_25",
+        "snapshot_hash": "6c10f13989c9f21d04d4da769b791117",
+        "type": "Literal",
+        "label": "Literal: 2026-07-13 18:20:49.378017",
+        "is_boundary": false
+      }
+    ],
+    "edges": [
+      {
+        "from": "@sort_1",
+        "to": "@aggregate_2",
+        "scope": "root"
+      },
+      {
+        "from": "@sort_1",
+        "to": "@sort_key_3",
+        "scope": "root"
+      },
+      {
+        "from": "@aggregate_2",
+        "to": "@project_4",
+        "scope": "root"
+      },
+      {
+        "from": "@aggregate_2",
+        "to": "@field_5",
+        "scope": "root"
+      },
+      {
+        "from": "@aggregate_2",
+        "to": "@count_6",
+        "scope": "root"
+      },
+      {
+        "from": "@sort_key_3",
+        "to": "@field_7",
+        "scope": "root"
+      },
+      {
+        "from": "@project_4",
+        "to": "@filter_8",
+        "scope": "root"
+      },
+      {
+        "from": "@project_4",
+        "to": "@field_9",
+        "scope": "root"
+      },
+      {
+        "from": "@project_4",
+        "to": "@field_10",
+        "scope": "root"
+      },
+      {
+        "from": "@project_4",
+        "to": "@field_11",
+        "scope": "root"
+      },
+      {
+        "from": "@project_4",
+        "to": "@field_12",
+        "scope": "root"
+      },
+      {
+        "from": "@project_4",
+        "to": "@field_13",
+        "scope": "root"
+      },
+      {
+        "from": "@project_4",
+        "to": "@timestamp_truncate_14",
+        "scope": "root"
+      },
+      {
+        "from": "@field_5",
+        "to": "@project_4",
+        "scope": "root"
+      },
+      {
+        "from": "@count_6",
+        "to": "@field_15",
+        "scope": "root"
+      },
+      {
+        "from": "@field_7",
+        "to": "@aggregate_2",
+        "scope": "root"
+      },
+      {
+        "from": "@filter_8",
+        "to": "@database_table_16",
+        "scope": "root"
+      },
+      {
+        "from": "@filter_8",
+        "to": "@equals_17",
+        "scope": "root"
+      },
+      {
+        "from": "@filter_8",
+        "to": "@equals_18",
+        "scope": "root"
+      },
+      {
+        "from": "@filter_8",
+        "to": "@greater_19",
+        "scope": "root"
+      },
+      {
+        "from": "@field_9",
+        "to": "@filter_8",
+        "scope": "root"
+      },
+      {
+        "from": "@field_10",
+        "to": "@filter_8",
+        "scope": "root"
+      },
+      {
+        "from": "@field_11",
+        "to": "@filter_8",
+        "scope": "root"
+      },
+      {
+        "from": "@field_12",
+        "to": "@filter_8",
+        "scope": "root"
+      },
+      {
+        "from": "@field_13",
+        "to": "@filter_8",
+        "scope": "root"
+      },
+      {
+        "from": "@timestamp_truncate_14",
+        "to": "@field_10",
+        "scope": "root"
+      },
+      {
+        "from": "@field_15",
+        "to": "@project_4",
+        "scope": "root"
+      },
+      {
+        "from": "@equals_17",
+        "to": "@field_20",
+        "scope": "root"
+      },
+      {
+        "from": "@equals_17",
+        "to": "@literal_21",
+        "scope": "root"
+      },
+      {
+        "from": "@equals_18",
+        "to": "@field_22",
+        "scope": "root"
+      },
+      {
+        "from": "@equals_18",
+        "to": "@literal_23",
+        "scope": "root"
+      },
+      {
+        "from": "@greater_19",
+        "to": "@field_24",
+        "scope": "root"
+      },
+      {
+        "from": "@greater_19",
+        "to": "@literal_25",
+        "scope": "root"
+      },
+      {
+        "from": "@field_20",
+        "to": "@database_table_16",
+        "scope": "root"
+      },
+      {
+        "from": "@field_22",
+        "to": "@database_table_16",
+        "scope": "root"
+      },
+      {
+        "from": "@field_24",
+        "to": "@database_table_16",
+        "scope": "root"
+      }
+    ],
+    "overlays": {}
+  }
+}

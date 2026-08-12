@@ -1,0 +1,229 @@
+---
+definitions:
+  dtypes:
+    dtype_0b7a1ed91d8e:
+      op: DataType
+      type: String
+      nullable: true
+    dtype_90b0cfdc0933:
+      op: DataType
+      type: Boolean
+      nullable: true
+    dtype_275adb4f2026:
+      op: DataType
+      type: Timestamp
+      timezone: ~
+      scale: ~
+      nullable: true
+    dtype_5b93e25c4bac:
+      op: DataType
+      type: Int64
+      nullable: true
+  nodes:
+    "@read_e2e8d8611e0c":
+      op: Read
+      method_name: read_parquet
+      name: raw_github_events
+      profile: 831c62036554cbf68732db4cb24207e2_0
+      read_kwargs:
+        - - hash_path
+          - database_tables/52127ef71f8f5484fc8e7504739591cc.parquet
+        - - table_name
+          - raw_github_events
+        - - read_path
+          - database_tables/52127ef71f8f5484fc8e7504739591cc.parquet
+      normalize_method:
+        kind: named
+        name: read_path_md5sum
+      schema_ref: schema_99ed61e761f3
+      snapshot_hash: e2e8d8611e0c55b8e53e2ee79afb3672
+    "@filter_e5d9bb2ad461":
+      op: Filter
+      parent:
+        node_ref: "@read_e2e8d8611e0c"
+      predicates:
+        - op: Equals
+          left:
+            op: Field
+            name: repo_name
+            relation:
+              node_ref: "@read_e2e8d8611e0c"
+            type:
+              dtype_ref: dtype_0b7a1ed91d8e
+          right:
+            op: Literal
+            value: dbt-labs/dbt-core
+            type:
+              dtype_ref: dtype_0b7a1ed91d8e
+          type:
+            dtype_ref: dtype_90b0cfdc0933
+        - op: Equals
+          left:
+            op: Field
+            name: type
+            relation:
+              node_ref: "@read_e2e8d8611e0c"
+            type:
+              dtype_ref: dtype_0b7a1ed91d8e
+          right:
+            op: Literal
+            value: WatchEvent
+            type:
+              dtype_ref: dtype_0b7a1ed91d8e
+          type:
+            dtype_ref: dtype_90b0cfdc0933
+        - op: Greater
+          left:
+            op: Field
+            name: created_at
+            relation:
+              node_ref: "@read_e2e8d8611e0c"
+            type:
+              dtype_ref: dtype_275adb4f2026
+          right:
+            op: Literal
+            value: "2026-07-13T18:20:49.378017"
+            type:
+              dtype_ref: dtype_275adb4f2026
+          type:
+            dtype_ref: dtype_90b0cfdc0933
+      snapshot_hash: e5d9bb2ad461051233b2df18a597aa63
+    "@project_dca2d483a7e3":
+      op: Project
+      parent:
+        node_ref: "@filter_e5d9bb2ad461"
+      values:
+        id:
+          op: Field
+          name: id
+          relation:
+            node_ref: "@filter_e5d9bb2ad461"
+          type:
+            dtype_ref: dtype_0b7a1ed91d8e
+        created_at:
+          op: Field
+          name: created_at
+          relation:
+            node_ref: "@filter_e5d9bb2ad461"
+          type:
+            dtype_ref: dtype_275adb4f2026
+        type:
+          op: Field
+          name: type
+          relation:
+            node_ref: "@filter_e5d9bb2ad461"
+          type:
+            dtype_ref: dtype_0b7a1ed91d8e
+        repo_name:
+          op: Field
+          name: repo_name
+          relation:
+            node_ref: "@filter_e5d9bb2ad461"
+          type:
+            dtype_ref: dtype_0b7a1ed91d8e
+        actor_login:
+          op: Field
+          name: actor_login
+          relation:
+            node_ref: "@filter_e5d9bb2ad461"
+          type:
+            dtype_ref: dtype_0b7a1ed91d8e
+        week:
+          op: TimestampTruncate
+          arg:
+            op: Field
+            name: created_at
+            relation:
+              node_ref: "@filter_e5d9bb2ad461"
+            type:
+              dtype_ref: dtype_275adb4f2026
+          unit:
+            op: IntervalUnit
+            name: DateUnit
+            value: W
+          type:
+            dtype_ref: dtype_275adb4f2026
+      snapshot_hash: dca2d483a7e37b83a4676696ec397214
+    "@aggregate_cc933de529a8":
+      op: Aggregate
+      parent:
+        node_ref: "@project_dca2d483a7e3"
+      by:
+        week:
+          op: Field
+          name: week
+          relation:
+            node_ref: "@project_dca2d483a7e3"
+          type:
+            dtype_ref: dtype_275adb4f2026
+      metrics:
+        stars:
+          op: Count
+          arg:
+            op: Field
+            name: id
+            relation:
+              node_ref: "@project_dca2d483a7e3"
+            type:
+              dtype_ref: dtype_0b7a1ed91d8e
+          where: ~
+          type:
+            dtype_ref: dtype_5b93e25c4bac
+      snapshot_hash: cc933de529a89988717986f0f75a08eb
+  schemas:
+    schema_99ed61e761f3:
+      id:
+        op: DataType
+        type: String
+        nullable: true
+      created_at:
+        op: DataType
+        type: Timestamp
+        timezone: ~
+        scale: ~
+        nullable: true
+      type:
+        op: DataType
+        type: String
+        nullable: true
+      repo_name:
+        op: DataType
+        type: String
+        nullable: true
+      actor_login:
+        op: DataType
+        type: String
+        nullable: true
+    schema_2c1d59fc9cd6:
+      week:
+        op: DataType
+        type: Timestamp
+        timezone: ~
+        scale: ~
+        nullable: true
+      stars:
+        op: DataType
+        type: Int64
+        nullable: true
+expression:
+  op: Sort
+  parent:
+    node_ref: "@aggregate_cc933de529a8"
+  keys:
+    op: tuple
+    values:
+      - op: SortKey
+        expr:
+          op: Field
+          name: week
+          relation:
+            node_ref: "@aggregate_cc933de529a8"
+          type:
+            dtype_ref: dtype_275adb4f2026
+        ascending: true
+        nulls_first: false
+        type:
+          dtype_ref: dtype_275adb4f2026
+  schema_ref:
+    schema_ref: schema_2c1d59fc9cd6
+...

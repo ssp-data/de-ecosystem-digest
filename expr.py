@@ -39,25 +39,25 @@ star_velocity = _bind(lambda: star_velocity_30d(con, "dbt-labs/dbt-core"))
 # these to ./catalog via scripts/catalog_register.py; every entry is
 # content-addressed and reproducible without re-running ingest (xorq bundles
 # the source read at build time).
-# Each entry binds one metric to one tool. The digest analyses ~16 DE tools;
-# dbt-core / duckdb / dagster / polars here are just the demo subjects being
-# measured, not project dependencies.
-dbt_star_velocity = star_velocity  # star_velocity_30d(con, "dbt-labs/dbt-core")
-duckdb_download_trend = _bind(lambda: download_trend_90d(con, "duckdb"))
+# These bind each metric to dbt-core / duckdb as the running demo subjects —
+# they are tools the digest *measures*, not project dependencies (the digest
+# analyses ~16 DE tools; dbt-core is just the consistent example throughout).
+dbt_star_velocity = star_velocity
+dbt_download_trend = _bind(lambda: download_trend_90d(con, "dbt-core"))
 dbt_momentum = _bind(lambda: download_momentum(con, "dbt-core"))
 duckdb_buzz = _bind(lambda: social_buzz_score(con, "duckdb"))
-dagster_mentions = _bind(lambda: tool_mention_frequency(con, "dagster"))
-polars_health = _bind(lambda: ecosystem_health_score(con, "polars", "pola-rs/polars"))
+dbt_mentions = _bind(lambda: tool_mention_frequency(con, "dbt"))
+dbt_health = _bind(lambda: ecosystem_health_score(con, "dbt-core", "dbt-labs/dbt-core"))
 rising = _bind(lambda: rising_tools(con, DEMO_TOOL_REPO_PAIRS, top_n=5))
 
 # alias → module-level variable name (source of truth for `make catalog`)
 CATALOG_ENTRIES = {
     "dbt-star-velocity": "dbt_star_velocity",
-    "duckdb-download-trend": "duckdb_download_trend",
+    "dbt-download-trend": "dbt_download_trend",
     "dbt-momentum": "dbt_momentum",
     "duckdb-buzz": "duckdb_buzz",
-    "dagster-mentions": "dagster_mentions",
-    "polars-health": "polars_health",
+    "dbt-mentions": "dbt_mentions",
+    "dbt-health": "dbt_health",
     "rising-tools": "rising",
 }
 

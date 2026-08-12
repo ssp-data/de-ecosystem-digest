@@ -1,0 +1,9 @@
+---
+831c62036554cbf68732db4cb24207e2_0:
+  con_name: duckdb
+  kwargs_tuple:
+    database: ":memory:"
+    extensions: ~
+    read_only: false
+  idx: 0
+...
