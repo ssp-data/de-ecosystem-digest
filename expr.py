@@ -23,10 +23,43 @@ con = settings.backend()
 settings.load_tables_to_backend(con)
 
 # Named build target for `xorq build expr.py -e star_velocity` (make manifest).
-try:
-    star_velocity = star_velocity_30d(con, "dbt-labs/dbt-core")
-except Exception:
-    star_velocity = None
+def _bind(build):
+    """Bind an expression at import time; None if its source table is empty."""
+    try:
+        return build()
+    except Exception:  # source table not ingested yet
+        return None
+
+
+star_velocity = _bind(lambda: star_velocity_30d(con, "dbt-labs/dbt-core"))
+
+# ── Curated catalog entries ────────────────────────────────────────────────
+# Module-level *bound* expressions (con applied, args fixed) so each can be
+# registered as a versioned entry in the xorq catalog. `make catalog` adds
+# these to ./catalog via scripts/catalog_register.py; every entry is
+# content-addressed and reproducible without re-running ingest (xorq bundles
+# the source read at build time).
+# Each entry binds one metric to one tool. The digest analyses ~16 DE tools;
+# dbt-core / duckdb / dagster / polars here are just the demo subjects being
+# measured, not project dependencies.
+dbt_star_velocity = star_velocity  # star_velocity_30d(con, "dbt-labs/dbt-core")
+duckdb_download_trend = _bind(lambda: download_trend_90d(con, "duckdb"))
+dbt_momentum = _bind(lambda: download_momentum(con, "dbt-core"))
+duckdb_buzz = _bind(lambda: social_buzz_score(con, "duckdb"))
+dagster_mentions = _bind(lambda: tool_mention_frequency(con, "dagster"))
+polars_health = _bind(lambda: ecosystem_health_score(con, "polars", "pola-rs/polars"))
+rising = _bind(lambda: rising_tools(con, DEMO_TOOL_REPO_PAIRS, top_n=5))
+
+# alias → module-level variable name (source of truth for `make catalog`)
+CATALOG_ENTRIES = {
+    "dbt-star-velocity": "dbt_star_velocity",
+    "duckdb-download-trend": "duckdb_download_trend",
+    "dbt-momentum": "dbt_momentum",
+    "duckdb-buzz": "duckdb_buzz",
+    "dagster-mentions": "dagster_mentions",
+    "polars-health": "polars_health",
+    "rising-tools": "rising",
+}
 
 
 def show(title: str, expr_fn: Callable) -> None:

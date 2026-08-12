@@ -1,6 +1,11 @@
 .DEFAULT_GOAL := help
+# Targets are commands, not files — needed since ./catalog is also a directory.
+.PHONY: help install ingest summary preview catalog catalog-list catalog-run digest \
+        manifest engines ml test full-pipeline clean noun verb template modifier \
+        lineage run-sentence
 
 DB_PATH ?= de_ecosystem.duckdb
+CATALOG ?= ./catalog
 
 help: ## Show all targets
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -17,8 +22,20 @@ ingest: ## Run all dlt ingest pipelines into DuckDB (outside the grammar)
 summary: ## Ingest overview with DuckDB bar() charts
 	uv run python scripts/summary.py
 
-catalog: ## Run every named catalog expression
+preview: ## Run every named expression and print result tables (dev overview)
 	uv run python expr.py
+
+catalog: ## Register curated expressions as versioned entries in ./catalog (real xorq catalog)
+	uv run python scripts/catalog_register.py
+	uv run xorq catalog --path $(CATALOG) list --kind
+
+catalog-list: ## List catalog entries (kind) and their aliases
+	uv run xorq catalog --path $(CATALOG) list --kind
+	@echo "--- aliases ---"
+	uv run xorq catalog --path $(CATALOG) list-aliases
+
+catalog-run: ## Execute a catalog entry — reproducible, no ingest (ALIAS=dbt-momentum)
+	uv run xorq catalog --path $(CATALOG) run $(or $(ALIAS),dbt-momentum) -o - -f csv
 
 digest: ## THE headline — momentum leaderboard + pydantic contrast
 	uv run python digest.py
@@ -35,7 +52,7 @@ ml: ## Train + predict tool adoption (fit=modifier, predict=verb)
 test: ## Run the test suite (no network needed)
 	uv run pytest tests/ -v
 
-full-pipeline: ingest summary catalog digest manifest engines ml ## Run everything in order
+full-pipeline: ingest summary preview catalog digest manifest engines ml ## Run everything in order
 
 clean: ## Archive the DB and reset dlt state to re-ingest from scratch
 	mkdir -p archive

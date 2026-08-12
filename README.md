@@ -5,6 +5,32 @@ Engineering ecosystem momentum digest** from four public signals — and uses it
 demonstrate the *grammar of data* (noun → verb → template → modifier → manifest →
 execute) from [Part 1](https://xorq.dev/blog/grammar-for-data-engineering/).
 
+## What it does
+
+Which data engineering tools are actually gaining momentum — not which have the
+biggest install base? Star counts and total downloads reward incumbents and
+transitive dependencies; they don't tell you what the community is *moving toward*
+right now. This project pulls four public signals about the DE ecosystem and lets
+you rank tools by **change** (growth, velocity, buzz) instead of absolute size —
+so a fast-rising newcomer can outrank a large-but-flat incumbent.
+
+## The data
+
+All four sources are ingested with [dlt](https://dlthub.com) into a local DuckDB
+file (`make ingest`). Each is a different angle on the same question — what's the DE
+ecosystem paying attention to?
+
+| Source | What we pull | What you can analyze |
+|--------|--------------|----------------------|
+| **[Data Engineering RSS feeds](https://www.ssp.sh/brain/rss-feeds-for-data-engineering)** | Posts from ~90 vendor + community DE blogs | What people are *writing about* — tool mentions, publishing rate per source |
+| **Bluesky posts** | Recent posts matching each tool's keyword | Social buzz — what people are *talking about*, trending hashtags |
+| **PyPI downloads** | Daily download counts per package | Adoption *trend* — 90-day growth %, acceleration, not just raw volume |
+| **GitHub Archive events** | Push / PR / star events from the GH event firehose | Developer *activity* — star velocity, PR merge rate |
+
+Once ingested, the tables are yours to query directly, or via the curated
+expressions in `src/de_ecosystem/catalog/` (articles, pypi, github, social,
+composite) that the digest is built from.
+
 ## The digest, first
 
 ```bash
@@ -62,13 +88,33 @@ make engines   # same star_velocity on DuckDB, DataFusion, and Snowflake
 Snowflake reads `SNOWFLAKE_*` from `.env`; it skips with a clear message if
 unreachable.
 
+## The catalog: versioned, executable entries
+
+`make catalog` registers a curated set of expressions as **versioned entries** in a local,
+git-backed catalog at `./catalog` — the real [`xorq catalog`](https://docs.xorq.dev/api_reference/cli/index.html#catalog),
+not just naming. Each entry is content-addressed; xorq bundles the source read at build time, so
+entries are **reproducible without re-running ingest**. Editing an expression changes its hash →
+a new versioned entry (the old one stays retrievable).
+
+```bash
+make preview                          # execute every named expression (dev overview)
+make catalog                          # register curated entries → ./catalog
+make catalog-list                     # entries (kind) + aliases
+make catalog-run ALIAS=dbt-momentum   # execute an entry — reproducible, no ingest
+cd catalog && git log --oneline       # one commit per entry = version history
+```
+
+Curated aliases: `dbt-star-velocity`, `dbt-download-trend`, `dbt-momentum`, `duckdb-buzz`,
+`dbt-mentions`, `dbt-health`, `rising-tools` (see `CATALOG_ENTRIES` in `expr.py`).
+
 ## Where the grammar stops (and how to extend it)
 
 - **Ingestion is outside the grammar.** dlt handles extraction (imperative,
   stateful) into DuckDB — the boundary is deliberate. Swap in incremental loads or
   more sources without touching the catalog.
-- **Metrics live in the catalog as plain xorq expressions.** To grow them into a
-  full metrics layer, lift the composite definitions into the
+- **Metrics live in the catalog as plain xorq expressions** — and `make catalog`
+  registers them as versioned, content-addressed entries (see above). To grow them
+  into a full metrics layer, lift the composite definitions into the
   [boring-semantic-layer](https://github.com/boringdata/boring-semantic-layer)
   (dimensions/measures over the same xorq tables). Sketch:
 
@@ -86,7 +132,7 @@ unreachable.
 
 ```
 digest.py            # headline momentum leaderboard
-expr.py              # catalog showcase (build target for manifest)
+expr.py              # named expressions + curated CATALOG_ENTRIES (build/register target)
 engines.py           # multi-engine runner
 grammar.py           # noun/verb/template/modifier/run-sentence demos
 src/de_ecosystem/
