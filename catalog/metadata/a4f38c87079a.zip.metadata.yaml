@@ -1,0 +1,216 @@
+md5sum: d4b6c2f3341358b717a89e3c53b2cdfb
+backends:
+  - xorq_datafusion
+expr_metadata:
+  kind: expr
+  schema_out:
+    date: timestamp(9)
+    downloads: int64
+    package: string
+  cache_keys:
+    key: xorq_cache-snapshot-4788a41e541c0526df207922813c0377
+    relative_path: parquet
+  sql_queries:
+    - - main
+      - xorq_datafusion
+      - |-
+        SELECT
+          "t0"."date",
+          "t0"."downloads",
+          "t0"."package"
+        FROM "raw_pypi_downloads" AS "t0"
+        WHERE
+          "t0"."package" = 'dbt-core'
+          AND "t0"."category" = 'without_mirrors'
+          AND "t0"."date" > DATE_TRUNC('DAY', '2026-05-14')
+        ORDER BY
+          "t0"."date" ASC
+  lineage:
+    version: 2
+    root: "@sort_1"
+    nodes:
+      - id: "@sort_1"
+        snapshot_hash: a4f38c87079ab15ca5784b642dffa1f9
+        type: Sort
+        label: Sort
+        is_boundary: false
+        schema:
+          date: timestamp(9)
+          downloads: int64
+          package: string
+      - id: "@project_2"
+        snapshot_hash: b8225573ba8cf4c36a618de073af3fcf
+        type: Project
+        label: Project
+        is_boundary: false
+        schema:
+          date: timestamp(9)
+          downloads: int64
+          package: string
+      - id: "@sort_key_3"
+        snapshot_hash: 3fe956d5351dd8eb49c1c80c5c43a304
+        type: SortKey
+        label: SortKey
+        is_boundary: false
+      - id: "@filter_4"
+        snapshot_hash: fa70c81cb13faaecfa01169d901290c6
+        type: Filter
+        label: Filter
+        is_boundary: false
+        schema:
+          category: string
+          date: timestamp(9)
+          downloads: int64
+          package: string
+      - id: "@field_5"
+        snapshot_hash: ed1d839f139cba0b7ba469eae888e903
+        type: Field
+        label: "Field:date"
+        is_boundary: false
+      - id: "@field_6"
+        snapshot_hash: 75be31cd871f1da30aa1d4321e08d9d1
+        type: Field
+        label: "Field:downloads"
+        is_boundary: false
+      - id: "@field_7"
+        snapshot_hash: e6cb32f5a38b30e20762cdc99d013524
+        type: Field
+        label: "Field:package"
+        is_boundary: false
+      - id: "@field_8"
+        snapshot_hash: 446695a277486581d00b69b38e1103a2
+        type: Field
+        label: "Field:date"
+        is_boundary: false
+      - id: "@database_table_9"
+        snapshot_hash: 5bf3dc3450ee62590c4cef0180c5da7b
+        type: DatabaseTable
+        label: DatabaseTable
+        is_boundary: true
+        boundary_kind: table
+        backend: xorq_datafusion
+        table_name: raw_pypi_downloads
+        schema:
+          category: string
+          date: timestamp(9)
+          downloads: int64
+          package: string
+      - id: "@equals_10"
+        snapshot_hash: bdd6c8a761abb2b6ea786b6a18a8b9c5
+        type: Equals
+        label: Equals
+        is_boundary: false
+      - id: "@equals_11"
+        snapshot_hash: 2d538f9e2b73428f90f477d6c80e8f7c
+        type: Equals
+        label: Equals
+        is_boundary: false
+      - id: "@greater_12"
+        snapshot_hash: 1ac8793e29ce66938bcee9d8258e5ad4
+        type: Greater
+        label: Greater
+        is_boundary: false
+      - id: "@field_13"
+        snapshot_hash: 71262b8e08a1a609d974fe54c662b0da
+        type: Field
+        label: "Field:package"
+        is_boundary: false
+      - id: "@literal_14"
+        snapshot_hash: d54e7c5376453f852ce66b872897ce1d
+        type: Literal
+        label: "Literal: dbt-core"
+        is_boundary: false
+      - id: "@field_15"
+        snapshot_hash: bbad025720ce037deb1b674a691d98e8
+        type: Field
+        label: "Field:category"
+        is_boundary: false
+      - id: "@literal_16"
+        snapshot_hash: aab3cd01465e2ae8478bffe15ffc8f0f
+        type: Literal
+        label: "Literal: without_mirrors"
+        is_boundary: false
+      - id: "@field_17"
+        snapshot_hash: 145bc37491883328987f735d6d06a4ab
+        type: Field
+        label: "Field:date"
+        is_boundary: false
+      - id: "@literal_18"
+        snapshot_hash: 479392d441c0e12c863eb5947b871551
+        type: Literal
+        label: "Literal: 2026-05-14"
+        is_boundary: false
+    edges:
+      - from: "@sort_1"
+        to: "@project_2"
+        scope: root
+      - from: "@sort_1"
+        to: "@sort_key_3"
+        scope: root
+      - from: "@project_2"
+        to: "@filter_4"
+        scope: root
+      - from: "@project_2"
+        to: "@field_5"
+        scope: root
+      - from: "@project_2"
+        to: "@field_6"
+        scope: root
+      - from: "@project_2"
+        to: "@field_7"
+        scope: root
+      - from: "@sort_key_3"
+        to: "@field_8"
+        scope: root
+      - from: "@filter_4"
+        to: "@database_table_9"
+        scope: root
+      - from: "@filter_4"
+        to: "@equals_10"
+        scope: root
+      - from: "@filter_4"
+        to: "@equals_11"
+        scope: root
+      - from: "@filter_4"
+        to: "@greater_12"
+        scope: root
+      - from: "@field_5"
+        to: "@filter_4"
+        scope: root
+      - from: "@field_6"
+        to: "@filter_4"
+        scope: root
+      - from: "@field_7"
+        to: "@filter_4"
+        scope: root
+      - from: "@field_8"
+        to: "@project_2"
+        scope: root
+      - from: "@equals_10"
+        to: "@field_13"
+        scope: root
+      - from: "@equals_10"
+        to: "@literal_14"
+        scope: root
+      - from: "@equals_11"
+        to: "@field_15"
+        scope: root
+      - from: "@equals_11"
+        to: "@literal_16"
+        scope: root
+      - from: "@greater_12"
+        to: "@field_17"
+        scope: root
+      - from: "@greater_12"
+        to: "@literal_18"
+        scope: root
+      - from: "@field_13"
+        to: "@database_table_9"
+        scope: root
+      - from: "@field_15"
+        to: "@database_table_9"
+        scope: root
+      - from: "@field_17"
+        to: "@database_table_9"
+        scope: root
+    overlays: {}

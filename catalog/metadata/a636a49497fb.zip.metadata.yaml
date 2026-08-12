@@ -1,0 +1,37 @@
+md5sum: 4cce2510ad1ce1980d8fda84af243990
+backends:
+  - xorq_datafusion
+expr_metadata:
+  kind: source
+  schema_out:
+    package: string
+    growth_pct: float64
+    recent_daily: int64
+    total_downloads: float64
+  cache_keys:
+    key: xorq_cache-snapshot-a636a49497fbba9ac8fa297db1801707
+    relative_path: parquet
+  sql_queries:
+    - - main
+      - xorq_datafusion
+      - |-
+        SELECT
+          *
+        FROM "ibis_pandas_memtable_230d282497fc762dabcf7cca7bcd543d"
+  lineage:
+    version: 2
+    root: "@in_memory_table_1"
+    nodes:
+      - id: "@in_memory_table_1"
+        snapshot_hash: a636a49497fbba9ac8fa297db1801707
+        type: InMemoryTable
+        label: InMemoryTable
+        is_boundary: true
+        boundary_kind: table
+        schema:
+          package: string
+          growth_pct: float64
+          recent_daily: int64
+          total_downloads: float64
+    edges: []
+    overlays: {}

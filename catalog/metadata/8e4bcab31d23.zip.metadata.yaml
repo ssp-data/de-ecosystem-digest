@@ -1,0 +1,39 @@
+md5sum: 49f96cc0a6ea9e9595e2662024fe3abc
+backends:
+  - xorq_datafusion
+expr_metadata:
+  kind: source
+  schema_out:
+    keyword: string
+    post_count: int64
+    total_likes: int64
+    total_reposts: int64
+    buzz_score: int64
+  cache_keys:
+    key: xorq_cache-snapshot-8e4bcab31d23c70bc5f243957b03fff3
+    relative_path: parquet
+  sql_queries:
+    - - main
+      - xorq_datafusion
+      - |-
+        SELECT
+          *
+        FROM "ibis_pandas_memtable_45129f7d4eb7b1dafaa34adac16b4e3d"
+  lineage:
+    version: 2
+    root: "@in_memory_table_1"
+    nodes:
+      - id: "@in_memory_table_1"
+        snapshot_hash: 8e4bcab31d23c70bc5f243957b03fff3
+        type: InMemoryTable
+        label: InMemoryTable
+        is_boundary: true
+        boundary_kind: table
+        schema:
+          keyword: string
+          post_count: int64
+          total_likes: int64
+          total_reposts: int64
+          buzz_score: int64
+    edges: []
+    overlays: {}

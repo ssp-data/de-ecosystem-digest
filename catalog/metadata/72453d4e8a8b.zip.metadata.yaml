@@ -1,0 +1,360 @@
+md5sum: e851aadd9617a9ccbb65e8f5bdfec2f7
+backends:
+  - xorq_datafusion
+expr_metadata:
+  kind: expr
+  schema_out:
+    week: timestamp
+    mentions: int64
+  cache_keys:
+    key: xorq_cache-snapshot-17e7fb9aed84ee6df2b00ffb2a9470bb
+    relative_path: parquet
+  sql_queries:
+    - - main
+      - xorq_datafusion
+      - |-
+        SELECT
+          *
+        FROM (
+          SELECT
+            "t1"."week",
+            COUNT("t1"."id") AS "mentions"
+          FROM (
+            SELECT
+              "t1"."id",
+              "t1"."published_date",
+              "t1"."source_name",
+              "t1"."author",
+              "t1"."title",
+              "t1"."url",
+              "t1"."word_count",
+              "t1"."_dlt_load_id",
+              "t1"."_dlt_id",
+              "t1"."week"
+            FROM (
+              SELECT
+                "t0"."id",
+                "t0"."published_date",
+                "t0"."source_name",
+                "t0"."author",
+                "t0"."title",
+                "t0"."url",
+                "t0"."word_count",
+                "t0"."_dlt_load_id",
+                "t0"."_dlt_id",
+                DATE_TRUNC('WEEK', "t0"."published_date") AS "week"
+              FROM "articles" AS "t0"
+              WHERE
+                "t0"."published_date" > ARROW_CAST('2026-07-13 18:31:56.653728', 'Timestamp(Microsecond, None)')
+                AND POSITION('dbt' IN LOWER("t0"."title")) > 0
+            ) AS "t1"
+          ) AS t1
+          GROUP BY
+            "t1"."week"
+        ) AS "t2"
+        ORDER BY
+          "t2"."week" ASC
+  lineage:
+    version: 2
+    root: "@sort_1"
+    nodes:
+      - id: "@sort_1"
+        snapshot_hash: 72453d4e8a8bfe5e836adebf769b156f
+        type: Sort
+        label: Sort
+        is_boundary: false
+        schema:
+          week: timestamp
+          mentions: int64
+      - id: "@aggregate_2"
+        snapshot_hash: 894a134c79d6c9647329660e9a87baa2
+        type: Aggregate
+        label: Aggregate
+        is_boundary: false
+        schema:
+          week: timestamp
+          mentions: int64
+      - id: "@sort_key_3"
+        snapshot_hash: cf1e48f10e89c1ff3d9002f5ff191b0f
+        type: SortKey
+        label: SortKey
+        is_boundary: false
+      - id: "@project_4"
+        snapshot_hash: 11086cd5a4db503bcbb9702285bf79d1
+        type: Project
+        label: Project
+        is_boundary: false
+        schema:
+          id: string
+          published_date: timestamp(9)
+          source_name: string
+          author: string
+          title: string
+          url: string
+          word_count: int64
+          _dlt_load_id: string
+          _dlt_id: string
+          week: timestamp
+      - id: "@field_5"
+        snapshot_hash: d675759898ea7a75521c563c901fea1d
+        type: Field
+        label: "Field:week"
+        is_boundary: false
+      - id: "@count_6"
+        snapshot_hash: 398b870ccf9d6014b3520ac32aeaa31f
+        type: Count
+        label: Count
+        is_boundary: false
+      - id: "@field_7"
+        snapshot_hash: 83406583f82cfcc4d116643d48b70204
+        type: Field
+        label: "Field:week"
+        is_boundary: false
+      - id: "@filter_8"
+        snapshot_hash: f7fae768885773ca6366e9ca94320bae
+        type: Filter
+        label: Filter
+        is_boundary: false
+        schema:
+          id: string
+          published_date: timestamp(9)
+          source_name: string
+          author: string
+          title: string
+          url: string
+          word_count: int64
+          _dlt_load_id: string
+          _dlt_id: string
+      - id: "@field_9"
+        snapshot_hash: 7fefcf04b9ba7fd8a8c1a49429d8075c
+        type: Field
+        label: "Field:id"
+        is_boundary: false
+      - id: "@field_10"
+        snapshot_hash: eb852de5f3e6b0ed24a2359f5340e70f
+        type: Field
+        label: "Field:published_date"
+        is_boundary: false
+      - id: "@field_11"
+        snapshot_hash: eec13685f6701c8d1b8cf31e8a8019de
+        type: Field
+        label: "Field:source_name"
+        is_boundary: false
+      - id: "@field_12"
+        snapshot_hash: 563b03eb5e84e081781158226e611dde
+        type: Field
+        label: "Field:author"
+        is_boundary: false
+      - id: "@field_13"
+        snapshot_hash: 37008961ef255fd842962ca939bf8320
+        type: Field
+        label: "Field:title"
+        is_boundary: false
+      - id: "@field_14"
+        snapshot_hash: 75e0817a6ea6d0919200671accffcfc8
+        type: Field
+        label: "Field:url"
+        is_boundary: false
+      - id: "@field_15"
+        snapshot_hash: 1fc9b9715aa22bb12dbaf9f0f7b5697f
+        type: Field
+        label: "Field:word_count"
+        is_boundary: false
+      - id: "@field_16"
+        snapshot_hash: 932294e1c1ca2dcd4a7bb3d778eda7aa
+        type: Field
+        label: "Field:_dlt_load_id"
+        is_boundary: false
+      - id: "@field_17"
+        snapshot_hash: 4815d46f3dc632eaa475a853579a5126
+        type: Field
+        label: "Field:_dlt_id"
+        is_boundary: false
+      - id: "@timestamp_truncate_18"
+        snapshot_hash: d33824fee993997f0c4510359f952d8f
+        type: TimestampTruncate
+        label: TimestampTruncate
+        is_boundary: false
+      - id: "@field_19"
+        snapshot_hash: 8ce6779b11b57bd0199e3cbb5a14b688
+        type: Field
+        label: "Field:id"
+        is_boundary: false
+      - id: "@database_table_20"
+        snapshot_hash: 75c2daca5fce6d7645e748718f1bbe6c
+        type: DatabaseTable
+        label: DatabaseTable
+        is_boundary: true
+        boundary_kind: table
+        backend: xorq_datafusion
+        table_name: articles
+        schema:
+          id: string
+          published_date: timestamp(9)
+          source_name: string
+          author: string
+          title: string
+          url: string
+          word_count: int64
+          _dlt_load_id: string
+          _dlt_id: string
+      - id: "@greater_21"
+        snapshot_hash: b9490c3a100fac94dad30768306011be
+        type: Greater
+        label: Greater
+        is_boundary: false
+      - id: "@string_contains_22"
+        snapshot_hash: 3fb2c80a9b8e0e35c2de9ce31a45f263
+        type: StringContains
+        label: StringContains
+        is_boundary: false
+      - id: "@field_23"
+        snapshot_hash: 812b2b47a8f89626e13b2f5f15396ab6
+        type: Field
+        label: "Field:published_date"
+        is_boundary: false
+      - id: "@literal_24"
+        snapshot_hash: fdcc3e73c7201e9947a5b6eecb7aa6f9
+        type: Literal
+        label: "Literal: 2026-07-13 18:31:56.653728"
+        is_boundary: false
+      - id: "@lowercase_25"
+        snapshot_hash: 40a53de2c432aa93e1085bde65a48170
+        type: Lowercase
+        label: Lowercase
+        is_boundary: false
+      - id: "@literal_26"
+        snapshot_hash: ca7a873a14839956197a5dcf60ded292
+        type: Literal
+        label: "Literal: dbt"
+        is_boundary: false
+      - id: "@field_27"
+        snapshot_hash: 676ed57bf30020e1f68772882c20ab91
+        type: Field
+        label: "Field:title"
+        is_boundary: false
+    edges:
+      - from: "@sort_1"
+        to: "@aggregate_2"
+        scope: root
+      - from: "@sort_1"
+        to: "@sort_key_3"
+        scope: root
+      - from: "@aggregate_2"
+        to: "@project_4"
+        scope: root
+      - from: "@aggregate_2"
+        to: "@field_5"
+        scope: root
+      - from: "@aggregate_2"
+        to: "@count_6"
+        scope: root
+      - from: "@sort_key_3"
+        to: "@field_7"
+        scope: root
+      - from: "@project_4"
+        to: "@filter_8"
+        scope: root
+      - from: "@project_4"
+        to: "@field_9"
+        scope: root
+      - from: "@project_4"
+        to: "@field_10"
+        scope: root
+      - from: "@project_4"
+        to: "@field_11"
+        scope: root
+      - from: "@project_4"
+        to: "@field_12"
+        scope: root
+      - from: "@project_4"
+        to: "@field_13"
+        scope: root
+      - from: "@project_4"
+        to: "@field_14"
+        scope: root
+      - from: "@project_4"
+        to: "@field_15"
+        scope: root
+      - from: "@project_4"
+        to: "@field_16"
+        scope: root
+      - from: "@project_4"
+        to: "@field_17"
+        scope: root
+      - from: "@project_4"
+        to: "@timestamp_truncate_18"
+        scope: root
+      - from: "@field_5"
+        to: "@project_4"
+        scope: root
+      - from: "@count_6"
+        to: "@field_19"
+        scope: root
+      - from: "@field_7"
+        to: "@aggregate_2"
+        scope: root
+      - from: "@filter_8"
+        to: "@database_table_20"
+        scope: root
+      - from: "@filter_8"
+        to: "@greater_21"
+        scope: root
+      - from: "@filter_8"
+        to: "@string_contains_22"
+        scope: root
+      - from: "@field_9"
+        to: "@filter_8"
+        scope: root
+      - from: "@field_10"
+        to: "@filter_8"
+        scope: root
+      - from: "@field_11"
+        to: "@filter_8"
+        scope: root
+      - from: "@field_12"
+        to: "@filter_8"
+        scope: root
+      - from: "@field_13"
+        to: "@filter_8"
+        scope: root
+      - from: "@field_14"
+        to: "@filter_8"
+        scope: root
+      - from: "@field_15"
+        to: "@filter_8"
+        scope: root
+      - from: "@field_16"
+        to: "@filter_8"
+        scope: root
+      - from: "@field_17"
+        to: "@filter_8"
+        scope: root
+      - from: "@timestamp_truncate_18"
+        to: "@field_10"
+        scope: root
+      - from: "@field_19"
+        to: "@project_4"
+        scope: root
+      - from: "@greater_21"
+        to: "@field_23"
+        scope: root
+      - from: "@greater_21"
+        to: "@literal_24"
+        scope: root
+      - from: "@string_contains_22"
+        to: "@lowercase_25"
+        scope: root
+      - from: "@string_contains_22"
+        to: "@literal_26"
+        scope: root
+      - from: "@field_23"
+        to: "@database_table_20"
+        scope: root
+      - from: "@lowercase_25"
+        to: "@field_27"
+        scope: root
+      - from: "@field_27"
+        to: "@database_table_20"
+        scope: root
+    overlays: {}
